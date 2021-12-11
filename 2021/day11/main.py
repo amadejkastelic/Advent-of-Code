@@ -2,10 +2,10 @@ import typing
 
 
 def main():
-    file_name = input("Enter input path: ")
-    steps = int(input("Enter the number of steps: "))
+    file_name = input('Enter input path: ')
+    steps = int(input('Enter the number of steps: '))
 
-    with open(file_name, "r") as f:
+    with open(file_name, 'r') as f:
         content = f.readlines()
 
     energies = [[int(num) for num in line.strip()] for line in content]
@@ -16,8 +16,8 @@ def main():
         result += _next_step(energies=energies)
         count += 1
         if count == steps:
-            print(f"Part 1: {result}")
-    print(f"Part 2: {count}")
+            print(f'Part 1: {result}')
+    print(f'Part 2: {count}')
 
 
 def _next_step(energies: typing.List[typing.List[int]]) -> int:
@@ -60,10 +60,10 @@ def _flash(
 def _print_energies(energies: typing.List[typing.List[int]]):
     for line in energies:
         for energy in line:
-            print(energy, end="")
+            print(energy, end='')
         print()
     print()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

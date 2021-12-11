@@ -2,7 +2,6 @@ import typing
 
 
 class Fish:
-
     def __init__(self, days: int = 8):
         self.days = days
 
@@ -23,7 +22,7 @@ def _simulate_time(days: int, fish_list: typing.List[Fish]):
 
 
 def _main():
-    file_name = input("Enter input path: ")
+    file_name = input('Enter input path: ')
 
     with open(file_name, 'r') as f:
         content = f.read().splitlines()

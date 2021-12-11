@@ -5,7 +5,7 @@ import math
 
 
 def main():
-    file_name = input("Enter input path: ")
+    file_name = input('Enter input path: ')
 
     with open(file_name, 'r') as f:
         content = f.readlines()
@@ -33,7 +33,10 @@ def _find_basins(heightmap: typing.List[typing.List[int]]) -> int:
         (i, j)
         for i, row in enumerate(heightmap)
         for j, height in enumerate(row)
-        if all(height > heightmap[y][x] for y, x in _get_neighbours_indexes(x=j, y=i, heightmap=heightmap))
+        if all(
+            height > heightmap[y][x]
+            for y, x in _get_neighbours_indexes(x=j, y=i, heightmap=heightmap)
+        )
     ]
 
     highest = []
@@ -52,7 +55,9 @@ def _get_height(x: int, y: int, heightmap: typing.List[typing.List[int]]) -> int
     return int(heightmap[y][x])
 
 
-def _get_neighbours(x: int, y: int, heightmap: typing.List[typing.List[int]]) -> typing.List[int]:
+def _get_neighbours(
+    x: int, y: int, heightmap: typing.List[typing.List[int]]
+) -> typing.List[int]:
     return [
         _get_height(x=x - 1, y=y, heightmap=heightmap),
         _get_height(x=x, y=y - 1, heightmap=heightmap),
@@ -61,7 +66,9 @@ def _get_neighbours(x: int, y: int, heightmap: typing.List[typing.List[int]]) ->
     ]
 
 
-def _get_neighbours_indexes(x: int, y: int, heightmap: typing.List[typing.List[int]]) -> typing.List[typing.Tuple[int, int]]:
+def _get_neighbours_indexes(
+    x: int, y: int, heightmap: typing.List[typing.List[int]]
+) -> typing.List[typing.Tuple[int, int]]:
     neighbors = []
 
     if y > 0:
@@ -80,7 +87,10 @@ def _get_area(x: int, y: int, heightmap: typing.List[typing.List[int]]) -> int:
     if heightmap[y][x] >= 9 or heightmap[y][x] == -1:
         return 0
     heightmap[y][x] = -1
-    return 1 + sum(_get_area(y=i, x=j, heightmap=heightmap) for i, j in _get_neighbours_indexes(x=x, y=y, heightmap=heightmap))
+    return 1 + sum(
+        _get_area(y=i, x=j, heightmap=heightmap)
+        for i, j in _get_neighbours_indexes(x=x, y=y, heightmap=heightmap)
+    )
 
 
 if __name__ == '__main__':

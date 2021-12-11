@@ -2,7 +2,7 @@ import typing
 
 
 def main():
-    file_name = input("Enter input path: ")
+    file_name = input('Enter input path: ')
 
     with open(file_name, 'r') as f:
         content = f.read().splitlines()

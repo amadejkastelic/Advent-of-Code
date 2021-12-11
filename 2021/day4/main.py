@@ -2,9 +2,9 @@ import numpy as np
 
 
 def _main():
-    file_name = input("Enter input path: ")
+    file_name = input('Enter input path: ')
 
-    numbers = np.loadtxt(file_name, max_rows=1, delimiter=",").astype(complex)
+    numbers = np.loadtxt(file_name, max_rows=1, delimiter=',').astype(complex)
     cards = np.loadtxt(file_name, skiprows=2).reshape((100, 5, 5)).astype(complex)
 
     print(_get_final_score(numbers=numbers, cards=cards))
