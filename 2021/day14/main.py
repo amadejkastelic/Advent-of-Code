@@ -3,17 +3,17 @@ from collections import defaultdict
 
 
 def main():
-    file_name = input("Enter input path: ")
+    file_name = input('Enter input path: ')
 
-    with open(file_name, "r") as f:
-        polymer, insertions = f.read().split("\n\n")
+    with open(file_name, 'r') as f:
+        polymer, insertions = f.read().split('\n\n')
 
     insertions = dict(
-        insertion.strip().split(" -> ") for insertion in insertions.split("\n")
+        insertion.strip().split(' -> ') for insertion in insertions.split('\n')
     )
 
-    result = _execute_steps(polymer=polymer, insertions=insertions, steps=10)
-    print(f'Part 1: {max(result.values()) - min(result.values())}')
+    #result = _execute_steps(polymer=polymer, insertions=insertions, steps=10)
+    #print(f'Part 1: {max(result.values()) - min(result.values())}')
 
     result = _execute_steps(polymer=polymer, insertions=insertions, steps=40)
     print(f'Part 2: {max(result.values()) - min(result.values())}')
@@ -52,5 +52,5 @@ def _execute_steps(
     return chars
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

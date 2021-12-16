@@ -5,9 +5,10 @@ from collections import defaultdict
 
 
 def main():
-    file_name = input("Enter input path: ")
+    #file_name = input('Enter input path: ')
+    file_name = 'input.txt'
 
-    with open(file_name, "r") as f:
+    with open(file_name, 'r') as f:
         content = f.readlines()
 
     graph = list(list(map(int, line.strip())) for line in content)
@@ -15,7 +16,7 @@ def main():
     distance = _find_distance(
         start=(0, 0), end=(len(graph[0]) - 1, len(graph) - 1), graph=graph
     )
-    print(f"Part 1: {distance}")
+    print(f'Part 1: {distance}')
 
     width = len(graph)
     height = len(graph[0])
@@ -31,7 +32,7 @@ def main():
     distance = _find_distance(
         start=(0, 0), end=(len(graph[0]) - 1, len(graph) - 1), graph=graph
     )
-    print(f"Part 2: {distance}")
+    print(f'Part 2: {distance}')
 
 
 def _find_distance(
@@ -41,7 +42,7 @@ def _find_distance(
 ) -> float:
     visited = set()
 
-    distances = defaultdict(lambda: math.inf)
+    distances: typing.Dict[typing.Tuple[int, int], float] = defaultdict(lambda: math.inf)
     distances[start] = 0
 
     queue = [(start, 0)]
@@ -52,6 +53,8 @@ def _find_distance(
 
         visited.add(node)
         for neighbor in _get_neighbors(graph=graph, x=node[0], y=node[1]):
+            if neighbor in visited:
+                continue
             new_distance = distance + _get_weight(
                 graph=graph, x=neighbor[0], y=neighbor[1]
             )
@@ -85,5 +88,5 @@ def _get_weight(graph: typing.List[typing.List[int]], x: int, y: int):
     return graph[y][x]
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

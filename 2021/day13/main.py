@@ -2,33 +2,33 @@ import typing
 
 
 def main():
-    file_name = input("Enter input path: ")
+    file_name = input('Enter input path: ')
 
-    with open(file_name, "r") as f:
-        content, instructions = f.read().split("\n\n")
+    with open(file_name, 'r') as f:
+        content, instructions = f.read().split('\n\n')
 
     dots = set()
-    for line in content.split("\n"):
-        x, y = line.strip().split(",")
+    for line in content.split('\n'):
+        x, y = line.strip().split(',')
         dots.add((int(x), int(y)))
 
-    for idx, instruction in enumerate(instructions.strip().split("\n")):
-        fold, value = instruction.split("=")
+    for idx, instruction in enumerate(instructions.strip().split('\n')):
+        fold, value = instruction.split('=')
 
-        if fold[-1] == "x":
+        if fold[-1] == 'x':
             dots = _fold(dots=dots, x=int(value))
         else:
             dots = _fold(dots=dots, y=int(value))
 
         if idx == 0:
-            print(f"Part 1: {len(dots)}")
+            print(f'Part 1: {len(dots)}')
 
-    paper = [["."] * 50 for _ in range(6)]
+    paper = [['.'] * 50 for _ in range(6)]
     for x, y in dots:
-        paper[y][x] = "#"
+        paper[y][x] = '#'
 
     for row in paper:
-        print(row, sep="")
+        print(row, sep='')
 
 
 def _fold(
@@ -45,5 +45,5 @@ def _fold(
     return result
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
