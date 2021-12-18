@@ -5,8 +5,7 @@ from collections import defaultdict
 
 
 def main():
-    #file_name = input('Enter input path: ')
-    file_name = 'input.txt'
+    file_name = input('Enter input path: ')
 
     with open(file_name, 'r') as f:
         content = f.readlines()
@@ -45,11 +44,14 @@ def _find_distance(
     distances: typing.Dict[typing.Tuple[int, int], float] = defaultdict(lambda: math.inf)
     distances[start] = 0
 
-    queue = [(start, 0)]
+    queue = [(0, start)]
     while queue:
-        node, distance = heapq.heappop(queue)
+        distance, node = heapq.heappop(queue)
         if node == end:
             return distance
+
+        if node in visited:
+            continue
 
         visited.add(node)
         for neighbor in _get_neighbors(graph=graph, x=node[0], y=node[1]):
@@ -60,7 +62,7 @@ def _find_distance(
             )
             if new_distance < distances[neighbor]:
                 distances[neighbor] = new_distance
-                heapq.heappush(queue, (neighbor, new_distance))
+                heapq.heappush(queue, (new_distance, neighbor))
 
     return distances[end]
 
