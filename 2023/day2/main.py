@@ -22,7 +22,6 @@ class Set(object):
             and available_cubes[Color.GREEN] >= self.green
         )
 
-
 class Game(object):
     def __init__(self, game: str):
         game_id, _, sets = game.partition(': ')

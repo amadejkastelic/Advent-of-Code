@@ -13,6 +13,7 @@ str_num = {
 
 def part1() -> int:
     res = 0
+    # eightwothree
     with open('input.txt', 'r') as inp:
         for line in inp:
             line = line.strip()
