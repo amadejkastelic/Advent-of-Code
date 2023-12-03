@@ -1,3 +1,4 @@
+import time
 import typing
 from functools import reduce
 
@@ -81,6 +82,7 @@ if __name__ == '__main__':
     result2 = 0
     with open('2023/day3/input.txt', 'r') as input_file:
         schematic = [line.strip() for line in input_file]
+        start = time.time()
         for j in range(len(schematic)):
             for i in range(len(schematic[j])):
                 if schematic[j][i].isdigit() and get_adjecent_symbols(schematic=schematic, x=i, y=j):
@@ -89,6 +91,7 @@ if __name__ == '__main__':
                     adj_num = get_adjecent_numbers(schematic=schematic, x=i, y=j)
                     if len(adj_num) == 2:
                         result2 += reduce(lambda x, y: x.value * y.value, adj_num)
+        print(f'Took {round((time.time() - start)*1000)}ms')
 
     print(f'Part 1: {sum([num.value for num in result])}')
     print(f'Part 2: {result2}')
