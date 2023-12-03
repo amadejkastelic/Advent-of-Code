@@ -26,19 +26,16 @@ class Number(object):
 
 
 def get_symbol(schematic: typing.List[str], x: int, y: int) -> str:
-    if y < 0 or y >= len(schematic):
+    try:
+        return schematic[y][x]
+    except IndexError:
         return '.'
-    if x < 0 or x >= len(schematic[0]):
-        return '.'
-    return schematic[y][x]
 
 
 def get_adjecent_symbols(schematic: typing.List[str], x: int, y: int) -> typing.List[str]:
     res = []
     for i in range(-1, 2):
         for j in range(-1, 2):
-            if i == 0 and j == 0:
-                continue
             current = get_symbol(schematic=schematic, x=x + i, y=y + j)
             if not current.isdigit() and current != '.':
                 res.append(current)
