@@ -32,7 +32,7 @@ def get_symbol(schematic: typing.List[str], x: int, y: int) -> str:
         return '.'
 
 
-def get_adjecent_symbols(schematic: typing.List[str], x: int, y: int) -> typing.List[str]:
+def get_adjacent_symbols(schematic: typing.List[str], x: int, y: int) -> typing.List[str]:
     res = []
     for i in range(-1, 2):
         for j in range(-1, 2):
@@ -42,7 +42,7 @@ def get_adjecent_symbols(schematic: typing.List[str], x: int, y: int) -> typing.
     return res
 
 
-def get_adjecent_numbers(schematic: typing.List[str], x: int, y: int) -> typing.Set[Number]:
+def get_adjacent_numbers(schematic: typing.List[str], x: int, y: int) -> typing.Set[Number]:
     res: typing.Set[Number] = set()
     for i in range(-1, 2):
         for j in range(-1, 2):
@@ -82,10 +82,10 @@ if __name__ == '__main__':
         start = time.time()
         for j in range(len(schematic)):
             for i in range(len(schematic[j])):
-                if schematic[j][i].isdigit() and get_adjecent_symbols(schematic=schematic, x=i, y=j):
+                if schematic[j][i].isdigit() and get_adjacent_symbols(schematic=schematic, x=i, y=j):
                     result.add(extract_number(schematic=schematic, x=i, y=j))
                 elif schematic[j][i] == '*':
-                    adj_num = get_adjecent_numbers(schematic=schematic, x=i, y=j)
+                    adj_num = get_adjacent_numbers(schematic=schematic, x=i, y=j)
                     if len(adj_num) == 2:
                         result2 += reduce(lambda x, y: x.value * y.value, adj_num)
         print(f'Took {round((time.time() - start)*1000)}ms')
