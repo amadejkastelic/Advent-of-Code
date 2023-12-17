@@ -4,14 +4,14 @@ import typing
 from collections import defaultdict
 
 
-def _get_neighbors(graph: typing.List[typing.List[int]], x: int, y: int) -> typing.Set[typing.Tuple[int, int, int]]:
+def _get_neighbors(graph: typing.List[typing.List[int]], x: int, y: int) -> typing.Set[typing.Tuple[int, int, str]]:
     neighbors = set()
 
     adjacent = [
-        (0, 1, 1),
-        (1, 0, 2),
-        (-1, 0, 3),
-        (0, -1, 4),
+        (0, 1, 'down'),
+        (1, 0, 'right'),
+        (-1, 0, 'left'),
+        (0, -1, 'up'),
     ]
     for offset_x, offset_y, direction in adjacent:
         neighbor = (x + offset_x, y + offset_y, direction)
@@ -52,12 +52,13 @@ def dijkstra(
                     (new_dist, (x, y), n_direction, steps + 1 if direction == n_direction else 1),
                 )
 
-    return min([distances[(end[0], end[1], i)] for i in range(1, 5)]) + graph[end[1]][end[0]]
+    print(distances)
+    return min([distances[(end[0], end[1], i)] for i in ('left', 'right', 'up', 'down')])
 
 
 if __name__ == '__main__':
     graph: typing.List[typing.List[int]] = []
-    with open('2023/day17/input.txt', 'r') as input_file:
+    with open('2023/day17/small.txt', 'r') as input_file:
         for line in input_file:
             graph.append(list(map(int, list(line.strip()))))
 
