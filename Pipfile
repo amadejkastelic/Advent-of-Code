@@ -5,6 +5,8 @@ name = "pypi"
 
 [packages]
 sympy = "*"
+networkx = "*"
+matplotlib = "*"
 
 [dev-packages]
 black = "==23.7.0"
