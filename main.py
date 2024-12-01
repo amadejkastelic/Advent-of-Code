@@ -55,11 +55,13 @@ class Config:
 
 if __name__ == "__main__":
     config = Config.from_arguments()
+
     try:
         s: solver.Solver = importlib.import_module(
             f"{config.year}.day{config.day}.solver",
         ).Solver(config.input_file)
-        s.solve(config.part)
     except ImportError:
         print("Invalid year or day")
         sys.exit(1)
+
+    s.solve(config.part)
