@@ -14,7 +14,7 @@ class Solver(solver.Solver):
                 self.l2[int(b)] += 1
 
     def _solve_part1(self) -> int:
-        return sum([max(a, b) - min(a, b) for a, b in zip(sorted(self.l1), self._dict_to_list(self.l2))])
+        return sum([abs(a - b) for a, b in zip(sorted(self.l1), self._dict_to_list(self.l2))])
 
     def _solve_part2(self) -> int:
         return sum([num * self.l2[num] for num in self.l1])

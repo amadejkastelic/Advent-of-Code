@@ -9,9 +9,9 @@ networkx = "*"
 matplotlib = "*"
 
 [dev-packages]
-black = "==23.7.0"
-flake8 = "==6.1.0"
-flake8-import-order = "==0.18.2 "
+black = "==24.10.0"
+flake8 = "==7.1.1"
+flake8-import-order = "==0.18.2"
 
 [requires]
 python_version = "3.13"
