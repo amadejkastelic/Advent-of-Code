@@ -4,4 +4,8 @@ pkgs.mkShell {
     python313
     pipenv
   ];
+
+  shellHook = ''
+    pipenv shell
+  '';
 }
