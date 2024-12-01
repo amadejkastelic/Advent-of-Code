@@ -17,31 +17,32 @@ class Config:
 
     @classmethod
     def from_arguments(cls) -> 'Config':
+        today = datetime.date.today()
+
         parser = argparse.ArgumentParser()
         parser.add_argument(
             "--year",
             type=int,
             help="Year of the puzzle",
-            default=datetime.date.today().year,
+            default=today.year,
         )
         parser.add_argument(
             "--day",
             type=int,
             help="Day of the puzzle",
+            default=today.day,
         )
         parser.add_argument(
             "--part",
-            type=int,
+            type=typing.Optional[int],
             help="Part of the puzzle",
             default=None,
-            nargs="?",
         )
         parser.add_argument(
             "--input",
             type=str,
-            help="Input file path",
-            default=None,
-            nargs="?",
+            help="Input file name",
+            default='input.txt',
         )
         args = parser.parse_args()
 
@@ -49,7 +50,7 @@ class Config:
             year=args.year,
             day=args.day,
             part=args.part,
-            input_file=args.input or f"{args.year}/day{args.day}/input.txt",
+            input_file=f"{args.year}/day{args.day}/{args.input}",
         )
 
 
