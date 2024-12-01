@@ -4,8 +4,13 @@ import utils
 
 
 class Solver:
+    @utils.timed("init")
     def __init__(self, input_file_path: str):
         self.input_file_path = input_file_path
+        self._init()
+
+    def _init(self):
+        pass
 
     def solve(self, part: typing.Optional[int]) -> None:
         if not part:

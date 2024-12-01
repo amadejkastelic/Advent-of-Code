@@ -5,10 +5,9 @@ import solver
 
 
 class Solver(solver.Solver):
-    def __init__(self, input_file_path: str):
-        super().__init__(input_file_path)
+    def _init(self):
         self.l1, self.l2 = [], defaultdict(lambda: 0)
-        with open(input_file_path) as f:
+        with open(self.input_file_path) as f:
             for line in f:
                 a, b = line.split()
                 self.l1.append(int(a))
@@ -22,8 +21,4 @@ class Solver(solver.Solver):
 
     @staticmethod
     def _dict_to_list(d: typing.Dict[int, int]) -> typing.List[int]:
-        res = []
-        for k in sorted(d.keys()):
-            for _ in range(d[k]):
-                res.append(k)
-        return res
+        return sum([[k] * d[k] for k in sorted(d.keys())], [])
