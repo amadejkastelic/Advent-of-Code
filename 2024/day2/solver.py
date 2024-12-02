@@ -29,6 +29,8 @@ class Solver(solver.Solver):
                 if allow_bad_level and not hit:
                     if i == 0 and Solver._is_report_safe(report[1:]):
                         return True
+                    elif Solver._is_report_safe(report[0:i] + report[i + 1 :]):
+                        return True
                     hit = True
                     report[i + 1] = report[i]
                     continue
