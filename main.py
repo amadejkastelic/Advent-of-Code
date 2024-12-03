@@ -50,7 +50,7 @@ class Config:
             year=args.year,
             day=args.day,
             part=args.part,
-            input_file=f"{args.year}/day{args.day}/{args.input}",
+            input_file=f"inputs/{args.year}/day{args.day}/{args.input}",
         )
 
 
