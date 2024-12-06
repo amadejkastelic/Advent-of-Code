@@ -21,7 +21,7 @@ class Solver(solver.Solver):
 
     def _solve_part1(self, max_cycle: int = 1000) -> int:
         res = 1
-        visited = set(self.pos)
+        self.visited = {self.pos}
         pos = self.pos
         direction = (0, -1)  # (x, y)
         cycle = 0
@@ -37,9 +37,9 @@ class Solver(solver.Solver):
             next_ch = self.map[next_pos[1]][next_pos[0]]
             if next_ch == '.' or next_ch == '^':
                 pos = next_pos
-                if pos not in visited:
+                if pos not in self.visited:
                     res += 1
-                    visited.add(pos)
+                    self.visited.add(pos)
                 else:
                     cycle += 1
             elif next_ch == '#':
@@ -51,11 +51,13 @@ class Solver(solver.Solver):
 
     def _solve_part2(self) -> int:
         res = 0
-        for j in range(len(self.map)):
-            for i in range(len(self.map[j])):
-                if self.map[j][i] == '.':
-                    self.map[j][i] = '#'
-                    if self._solve_part1() == -1:
-                        res += 1
-                    self.map[j][i] = '.'
+        visited = frozenset(self.visited)
+        for vis in visited:
+            i = vis[0]
+            j = vis[1]
+            if self.map[j][i] == '.':
+                self.map[j][i] = '#'
+                if self._solve_part1() == -1:
+                    res += 1
+                self.map[j][i] = '.'
         return res
