@@ -55,7 +55,11 @@ class Solver(solver.Solver):
         for vis in visited:
             i = vis[0]
             j = vis[1]
-            if self.map[j][i] == '.':
+            if (
+                self.map[j][i] == '.'
+                and '#' in set(self.map[j])
+                and '#' in {self.map[j][i] for i in range(len(self.map[j]))}
+            ):
                 self.map[j][i] = '#'
                 if self._solve_part1() == -1:
                     res += 1
