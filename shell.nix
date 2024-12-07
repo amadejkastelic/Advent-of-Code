@@ -3,6 +3,7 @@ pkgs.mkShell {
   packages = with pkgs; [
     python313
     pipenv
+    pypy310
   ];
 
   shellHook = ''
