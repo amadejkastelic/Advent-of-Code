@@ -49,9 +49,9 @@ class Config:
         )
         parser.add_argument(
             '--init',
-            type=bool,
             help='Prepare stuff',
             default=False,
+            action='store_true',
         )
         args = parser.parse_args()
 
@@ -64,14 +64,19 @@ class Config:
         )
 
 
+def init(year: int, day: int) -> None:
+    path = os.path.join(str(year), f'day{day}')
+    path = f'{year}/day{day}'
+    os.makedirs(path, exist_ok=True)
+    shutil.copy2(src='examples/template.py', dst=os.path.join(path, 'solver.py'))
+
+
 if __name__ == '__main__':
     config = Config.from_arguments()
 
     if config.init:
-        path = os.path.join(config.year, f'day{config.day}')
-        path = f'{config.year}/day{config.day}'
-        os.makedirs(path, exist_ok=True)
-        shutil.copy2(src='examples/template.py', dst=os.path.join(path, 'solver.py'))
+        init(year=config.year, day=config.day)
+        sys.exit(0)
 
     try:
         s: solver.Solver = importlib.import_module(
