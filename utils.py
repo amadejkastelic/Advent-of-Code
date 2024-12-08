@@ -4,7 +4,12 @@ import shutil
 import typing
 from contextlib import contextmanager
 
+import bs4
+
 import requests
+
+
+BASE_AOC_URL = 'https://adventofcode.com/{year}/day/{day}'
 
 
 @contextmanager
@@ -18,19 +23,27 @@ def fetch_input(year: int, day: int, token: typing.Optional[str] = None) -> None
     path = os.path.join('inputs', str(year), f'day{day}')
     os.makedirs(path, exist_ok=True)
 
-    # Empty small inputs file
-    with open(os.path.join(path, 'small.txt'), 'w') as f:
-        f.write('')
-
     if not token:
         token = input('Session token: ')
 
+    base_url = BASE_AOC_URL.format(year=year, day=day)
+    kwargs = {
+        'cookies': {
+            'session': token,
+        },
+    }
+
+    with requests.get(base_url, **kwargs) as resp:
+        soup = bs4.BeautifulSoup(resp.text, 'html.parser')
+        example = soup.find('code').get_text()
+
+    with open(os.path.join(path, 'small.txt'), 'w') as f:
+        f.write(example)
+
     with (
         requests.get(
-            f'https://adventofcode.com/{year}/day/{day}/input',
-            cookies={
-                'session': token,
-            },
+            f'{base_url}/input',
+            **kwargs,
         ) as resp,
         open(os.path.join(path, 'input.txt'), 'w') as f,
     ):
