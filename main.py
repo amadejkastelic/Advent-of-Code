@@ -2,12 +2,11 @@ import argparse
 import dataclasses
 import datetime
 import importlib
-import os
-import shutil
 import sys
 import typing
 
 import solver
+import utils
 
 
 @dataclasses.dataclass
@@ -17,6 +16,8 @@ class Config:
     part: typing.Optional[int] = None
     input_file: typing.Optional[str] = None
     init: bool = False
+    fetch_input: bool = False
+    session_token: typing.Optional[str] = None
 
     @classmethod
     def from_arguments(cls) -> 'Config':
@@ -53,6 +54,18 @@ class Config:
             default=False,
             action='store_true',
         )
+        parser.add_argument(
+            '--fetch-input',
+            help='Fetch input from aoc',
+            default=False,
+            action='store_true',
+        )
+        parser.add_argument(
+            '--session-token',
+            type=typing.Optional[str],
+            help='Session token for input fetching',
+            default=None,
+        )
         args = parser.parse_args()
 
         return cls(
@@ -61,21 +74,20 @@ class Config:
             part=args.part,
             input_file=f'inputs/{args.year}/day{args.day}/{args.input}',
             init=args.init,
+            fetch_input=args.fetch_input,
+            session_token=args.session_token,
         )
-
-
-def init(year: int, day: int) -> None:
-    path = os.path.join(str(year), f'day{day}')
-    path = f'{year}/day{day}'
-    os.makedirs(path, exist_ok=True)
-    shutil.copy2(src='examples/template.py', dst=os.path.join(path, 'solver.py'))
 
 
 if __name__ == '__main__':
     config = Config.from_arguments()
 
     if config.init:
-        init(year=config.year, day=config.day)
+        utils.init(year=config.year, day=config.day)
+    if config.fetch_input:
+        utils.fetch_input(year=config.year, day=config.day, token=config.session_token)
+
+    if any([config.init, config.fetch_input]):
         sys.exit(0)
 
     try:
