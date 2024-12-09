@@ -49,6 +49,8 @@ class DiskMap:
     def trim_2(self) -> None:
         for j in sorted(self.free_spaces.keys()):
             for i in sorted(self.blocks.keys(), reverse=True):
+                if i <= j:
+                    break
                 if len(self.blocks[i]) <= len(self.free_spaces[j]):
                     diff = len(self.free_spaces[j]) - len(self.blocks[i])
                     self.blocks[j] += list(self.blocks[i])
@@ -75,7 +77,6 @@ class DiskMap:
     @property
     def checksum_2(self) -> int:
         self.trim_2()
-
         res = 0
         idx = 0
         for bkey in sorted(self.blocks.keys()):
@@ -83,7 +84,6 @@ class DiskMap:
                 if num != -1:
                     res += idx * num
                 idx += 1
-
         return res
 
 
