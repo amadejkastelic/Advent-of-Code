@@ -4,9 +4,11 @@ import shutil
 import typing
 from contextlib import contextmanager
 
-import bs4
-
-import requests
+try:
+    import bs4
+    import requests
+except ImportError:
+    pass
 
 
 BASE_AOC_URL = 'https://adventofcode.com/{year}/day/{day}'

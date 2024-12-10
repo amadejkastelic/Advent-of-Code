@@ -93,7 +93,6 @@ class Solver(solver.Solver):
             self.disk_map = DiskMap(list(map(int, list(f.read().strip()))))
 
     def _solve_part1(self) -> int:
-        return 0
         return self.disk_map.checksum
 
     def _solve_part2(self) -> int:
