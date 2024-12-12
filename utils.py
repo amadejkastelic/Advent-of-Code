@@ -1,3 +1,4 @@
+import dataclasses
 import os
 import time
 import shutil
@@ -57,3 +58,9 @@ def init(year: int, day: int) -> None:
     path = f'{year}/day{day}'
     os.makedirs(path, exist_ok=True)
     shutil.copy2(src='examples/template.py', dst=os.path.join(path, 'solver.py'))
+
+
+@dataclasses.dataclass
+class Point:
+    x: int
+    y: int
