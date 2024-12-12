@@ -1,13 +1,7 @@
-import enum
 import typing
 from collections import defaultdict
 
 import solver
-
-
-class Direction(enum.Enum):
-    UP_DOWN = 0
-    SIDE = 1
 
 
 class Solver(solver.Solver):
@@ -36,7 +30,7 @@ class Solver(solver.Solver):
                     if (x, y) in visited:
                         continue
                     visited.add((x, y))
-                    for nx, ny, _ in self._get_existing_neighbors(x, y):
+                    for nx, ny in self._get_existing_neighbors(x, y):
                         if self._get(x, y) == self._get(nx, ny):
                             self.regions[plot].add((nx, ny))
                             q.append((nx, ny))
@@ -44,29 +38,12 @@ class Solver(solver.Solver):
                 existing_plots.add(plot)
                 visited.add((i, j))
 
-    def _get_neighbors(
-        self,
-        x: int,
-        y: int,
-        direction: typing.Optional[Direction] = None,
-    ) -> typing.List[typing.Tuple[int, int]]:
-        if not direction:
-            return [
-                (x - 1, y, Direction.UP_DOWN),
-                (x + 1, y, Direction.UP_DOWN),
-                (x, y - 1, Direction.SIDE),
-                (x, y + 1, Direction.SIDE),
-            ]
-
-        if direction == Direction.UP_DOWN:
-            return [
-                (x - 1, y, Direction.UP_DOWN),
-                (x + 1, y, Direction.UP_DOWN),
-            ]
-
+    def _get_neighbors(self, x: int, y: int) -> typing.List[typing.Tuple[int, int]]:
         return [
-            (x, y - 1, Direction.SIDE),
-            (x, y + 1, Direction.SIDE),
+            (x - 1, y),
+            (x + 1, y),
+            (x, y - 1),
+            (x, y + 1),
         ]
 
     def _get_existing_neighbors(self, x: int, y: int) -> typing.List[typing.Tuple[int, int]]:
@@ -78,9 +55,7 @@ class Solver(solver.Solver):
         )
 
     def _is_neighbor(self, reg: str, x: int, y: int) -> bool:
-        return len(self.regions[reg]) <= 1 or any(
-            [(i, j) in self.regions[reg] for i, j, _ in self._get_neighbors(x, y)]
-        )
+        return len(self.regions[reg]) <= 1 or any([(i, j) in self.regions[reg] for i, j in self._get_neighbors(x, y)])
 
     def _get(self, x: int, y: int) -> str:
         if y < 0 or y >= len(self.garden) or x < 0 or x >= len(self.garden[y]):
@@ -90,52 +65,66 @@ class Solver(solver.Solver):
     def _perimeter(self, region_name: str) -> int:
         res = 0
         for x, y in self.regions[region_name]:
-            for n_x, n_y, _ in self._get_neighbors(x, y):
+            for n_x, n_y in self._get_neighbors(x, y):
                 if (n_x, n_y) not in self.regions[region_name]:
                     res += 1
         return res
 
-    def _get_fences(self, region_name: str) -> typing.List[typing.Tuple[int, int, Direction]]:
+    def _get_fences(self, region_name: str) -> typing.List[typing.Tuple[int, int]]:
         fences = set()
         for x, y in self.regions[region_name]:
-            for n_x, n_y, direction in self._get_neighbors(x, y):
+            for n_x, n_y in self._get_neighbors(x, y):
                 if (n_x, n_y) not in self.regions[region_name]:
-                    direction = Direction.SIDE
-                    if x == n_x:
-                        direction = Direction.UP_DOWN
-
-                    fences.add((n_x, n_y, direction))
-        return fences
+                    fences.add((n_x, n_y))
+        return list(fences)
 
     def _perimeter_2(self, region_name: str) -> int:
-        fences = self._get_fences(region_name)
-        new_fences = []
-        visited = set()
-
-        for fence in fences:
-            x, y, direction = fence
-
-            if fence in visited:
-                continue
-            visited.add(fence)
-
-            new_fence = {fence}
-
-            q = self._get_neighbors(x, y, direction)
-            while q:
-                neighbor = q.pop()
-                if neighbor in visited:
+        res = 0
+        fences = sorted(self._get_fences(region_name))
+        combinations = set()
+        for x, y in fences:
+            for x2, y2 in fences:
+                if x == x2 and y == y2:
                     continue
-                visited.add(neighbor)
 
-                if (x == neighbor[0] or y == neighbor[1]) and neighbor in fences:
-                    new_fence.add(neighbor)
-                    q += self._get_neighbors(neighbor[0], neighbor[1], direction)
+                if (x + 1 == x2 and y + 1 == y2) or (x + 1 == x2 and y - 1 == y2):
+                    print(f'{region_name} - {(x, y)} - {(x2, y2)}')
+                    combinations.add(frozenset({(x, y), (x2, y2)}))
+                    res += 1
 
-            new_fences.append(new_fence)
+            if all(
+                [
+                    self._get(i, j) == region_name and frozenset({(x, y), (i, j)}) not in combinations
+                    for i, j in [(x - 1, y), (x, y - 1)]
+                ]
+            ):
+                res += 1
 
-        ln = len(new_fences)
-        return len(new_fences)
+            if all(
+                [
+                    self._get(i, j) == region_name and frozenset({(x, y), (i, j)}) not in combinations
+                    for i, j in [(x + 1, y), (x, y - 1)]
+                ]
+            ):
+                res += 1
+
+            if all(
+                [
+                    self._get(i, j) == region_name and frozenset({(x, y), (i, j)}) not in combinations
+                    for i, j in [(x - 1, y), (x, y + 1)]
+                ]
+            ):
+                res += 1
+
+            if all(
+                [
+                    self._get(i, j) == region_name and frozenset({(x, y), (i, j)}) not in combinations
+                    for i, j in [(x + 1, y), (x, y + 1)]
+                ]
+            ):
+                res += 1
+
+        return res
 
     def _solve_part1(self) -> int:
         return sum([self._perimeter(reg) * len(plots) for reg, plots in self.regions.items()])
