@@ -94,7 +94,7 @@ class Solver(solver.Solver):
 
             if all(
                 [
-                    self._get(i, j) == region_name and frozenset({(x, y), (i, j)}) not in combinations
+                    self._get(i, j) == region_name.strip('_') and frozenset({(x, y), (i, j)}) not in combinations
                     for i, j in [(x - 1, y), (x, y - 1)]
                 ]
             ):
@@ -102,7 +102,7 @@ class Solver(solver.Solver):
 
             if all(
                 [
-                    self._get(i, j) == region_name and frozenset({(x, y), (i, j)}) not in combinations
+                    self._get(i, j) == region_name.strip('_') and frozenset({(x, y), (i, j)}) not in combinations
                     for i, j in [(x + 1, y), (x, y - 1)]
                 ]
             ):
@@ -110,7 +110,7 @@ class Solver(solver.Solver):
 
             if all(
                 [
-                    self._get(i, j) == region_name and frozenset({(x, y), (i, j)}) not in combinations
+                    self._get(i, j) == region_name.strip('_') and frozenset({(x, y), (i, j)}) not in combinations
                     for i, j in [(x - 1, y), (x, y + 1)]
                 ]
             ):
@@ -118,7 +118,7 @@ class Solver(solver.Solver):
 
             if all(
                 [
-                    self._get(i, j) == region_name and frozenset({(x, y), (i, j)}) not in combinations
+                    self._get(i, j) == region_name.strip('_') and frozenset({(x, y), (i, j)}) not in combinations
                     for i, j in [(x + 1, y), (x, y + 1)]
                 ]
             ):
