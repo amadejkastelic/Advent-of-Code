@@ -19,7 +19,12 @@ BASE_AOC_URL = 'https://adventofcode.com/{year}/day/{day}'
 def timed(name: str):
     start = time.time()
     yield
-    print(f"Time taken for {name}: {round((time.time() - start) * 1000, 2)}ms")
+    exec_time = round((time.time() - start) * 1000, 2)
+    if exec_time >= 1000:
+        took = f'{round(exec_time / 1000, 2)}s'
+    else:
+        took = f'{exec_time}ms'
+    print(f"Time taken for {name}: {took}")
 
 
 def fetch_input(year: int, day: int, token: typing.Optional[str] = None) -> None:

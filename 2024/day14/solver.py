@@ -14,6 +14,7 @@ class Robot:
         self.x, self.y = pos
         self.vx, self.vy = vel
         self.visited: typing.Dict[typing.Tuple[int, int], int] = {}
+        self.initial = (self.x, self.y)
 
     @classmethod
     def parse(cls, robot: str) -> 'Robot':
@@ -28,7 +29,11 @@ class Robot:
     def __repr__(self) -> str:
         return str(self)
 
-    def pass_time(self, seconds: int):
+    def reset(self) -> None:
+        self.x, self.y = self.initial
+        self.visited = {}
+
+    def pass_time(self, seconds: int) -> None:
         for second in range(1, seconds + 1):
             self.x, self.y = self.x + self.vx, self.y + self.vy
             if self.x < 0:
@@ -75,7 +80,12 @@ class Solver(solver.Solver):
                 quadrant_cnts[3] += 1
         return functools.reduce(lambda x, y: x * y, quadrant_cnts)
 
+    def reset_robots(self) -> None:
+        for robot in self.robots:
+            robot.reset()
+
     def _solve_part2(self) -> int:
+        self.reset_robots()
         for i in range(1000000):
             positions = defaultdict(lambda: 0)
             for robot in self.robots:
