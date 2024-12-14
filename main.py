@@ -38,7 +38,7 @@ class Config:
         )
         parser.add_argument(
             '--part',
-            type=typing.Optional[int],
+            type=int,
             help='Part of the puzzle',
             default=None,
         )
