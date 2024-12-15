@@ -119,34 +119,42 @@ class Solver(solver.Solver):
 
         raise Exception('What?')
 
-    def _push_vertical2(self, x: int, y: int, move: str) -> bool:
-        direction = MOVE_TO_DIRECTION[move]
-        x1, x2 = x - direction[0], x - 2 * direction[0]
-
-        if self.grid2[y][x1] == '#' or self.grid2[y][x2] == '#':
+    def _push_right(self, x: int, y: int) -> bool:
+        x1, x2 = x + 1, x + 2
+        if self.grid2[y][x2] == '#':
             return False
 
-        if self.grid2[y][x1] == '.' and self.grid2[y][x2] == '.':
-            if move == '>':
-                self.grid2[y][x1] = '['
-                self.grid2[y][x2] = ']'
-            else:
-                self.grid2[y][x1] = ']'
-                self.grid2[y][x2] = '['
-            self.grid2[y][x1 - direction[0]] = '.'
-            self.grid2[y][x2 - 2 * direction[0]] = '.'
+        if self.grid2[y][x2] == '.':
+            self.grid2[y][x1] = '['
+            self.grid2[y][x2] = ']'
+            self.grid2[y][x] = '.'
             return True
 
-        if self.grid2[y][x1] in ('[', ']'):
-            if self._push_vertical2(x1, y, move):
-                if move == '>':
-                    self.grid2[y][x1] = '['
-                    self.grid2[y][x2] = ']'
-                else:
-                    self.grid2[y][x1] = ']'
-                    self.grid2[y][x2] = '['
-                self.grid2[y][x1 - direction[0]] = '.'
-                self.grid2[y][x2 - 2 * direction[0]] = '.'
+        if self.grid2[y][x2] == '[':
+            if self._push_right(x2, y):
+                self.grid2[y][x1] = '['
+                self.grid2[y][x2] = ']'
+                self.grid2[y][x] = '.'
+                return True
+
+        return False
+
+    def _push_left(self, x: int, y: int) -> bool:
+        x1, x2 = x - 2, x - 1
+        if self.grid2[y][x1] == '#':
+            return False
+
+        if self.grid2[y][x1] == '.':
+            self.grid2[y][x1] = '['
+            self.grid2[y][x2] = ']'
+            self.grid2[y][x] = '.'
+            return True
+
+        if self.grid2[y][x1] == ']':
+            if self._push_left(x1, y):
+                self.grid2[y][x1] = '['
+                self.grid2[y][x2] = ']'
+                self.grid2[y][x] = '.'
                 return True
 
         return False
@@ -165,10 +173,15 @@ class Solver(solver.Solver):
         if self.grid2[y][x1] == '.' and self.grid2[y][x2] == '.':
             return True
 
-        if self.grid2[y][x1] in ('[', ']') or self.grid2[y][x2] in ('[', ']'):
-            return self._can_push_horizontal(x1, y, move) and self._can_push_horizontal(x2, y, move)
+        can_push = True
+        if self.grid2[y][x1] == '[':
+            can_push = self._can_push_horizontal(x1, y, move)
+        elif self.grid2[y][x2] == '[':
+            can_push = self._can_push_horizontal(x2, y, move)
+        if self.grid2[y][x1] == ']':
+            can_push = can_push and self._can_push_horizontal(x1 - 1, y, move)
 
-        return False
+        return can_push
 
     def _push_horizontal2(self, x: int, y: int, move: str) -> bool:
         direction = MOVE_TO_DIRECTION[move]
@@ -188,26 +201,38 @@ class Solver(solver.Solver):
             self.grid2[y][x2] = ']'
             return True
 
-        if self.grid2[y][x1] in ('[', ']') or self.grid2[y][x2] in ('[', ']'):
-            if self._can_push_horizontal(x1, y, move) and self._can_push_horizontal(x2, y, move):
+        can_push = True
+        if self.grid2[y][x1] == '[':
+            can_push = self._can_push_horizontal(x1, y, move)
+        elif self.grid2[y][x2] == '[':
+            can_push = self._can_push_horizontal(x2, y, move)
+        if can_push and self.grid2[y][x1] == ']':
+            can_push = self._can_push_horizontal(x1 - 1, y, move)
+
+        if can_push:
+            if self.grid2[y][x1] == '[':
                 self._push_horizontal2(x1, y, move)
+            elif self.grid2[y][x2] == '[':
                 self._push_horizontal2(x2, y, move)
-                self.grid2[y - direction[1]][x1] = '.'
-                self.grid2[y - direction[1]][x2] = '.'
-                self.grid2[y][x1] = '['
-                self.grid2[y][x2] = ']'
-                return True
+            if self.grid2[y][x1] == ']':
+                self._push_horizontal2(x1 - 1, y, move)
+
+            self.grid2[y - direction[1]][x1] = '.'
+            self.grid2[y - direction[1]][x2] = '.'
+            self.grid2[y][x1] = '['
+            self.grid2[y][x2] = ']'
+            return True
 
         return False
 
     def push2(self, x: int, y: int, move: str) -> bool:
         match move:
             case '>':
-                return self._push_vertical2(x, y, move)
+                return self._push_right(x, y)
             case 'v':
                 return self._push_horizontal2(x, y, move)
             case '<':
-                return self._push_vertical2(x, y, move)
+                return self._push_left(x, y)
             case '^':
                 return self._push_horizontal2(x, y, move)
 
@@ -220,7 +245,6 @@ class Solver(solver.Solver):
 
         match self.grid2[new_pos[1]][new_pos[0]]:
             case '#':
-                self.illegal_moves.add((new_pos[0], new_pos[1], move))
                 return
             case '.':
                 self.grid2[self.pos2[1]][self.pos2[0]] = '.'
@@ -248,6 +272,10 @@ class Solver(solver.Solver):
 
         return res
 
+    def print_grid(self) -> None:
+        for line in self.grid2:
+            print(''.join(line))
+
     def _solve_part2(self) -> int:
         self.illegal_moves = set()
         res = 0
@@ -255,7 +283,6 @@ class Solver(solver.Solver):
             self.move2(move)
 
         for j in range(len(self.grid2)):
-            print(''.join(self.grid2[j]))
             for i in range(len(self.grid2[j])):
                 if self.grid2[j][i] == '[':
                     res += 100 * j + i
