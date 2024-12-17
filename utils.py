@@ -62,7 +62,7 @@ def init(year: int, day: int) -> None:
     path = os.path.join(str(year), f'day{day}')
     path = f'{year}/day{day}'
     os.makedirs(path, exist_ok=True)
-    shutil.copy2(src='examples/template.py', dst=os.path.join(path, 'solver.py'))
+    shutil.copy2(src='templates/template.py', dst=os.path.join(path, 'solver.py'))
 
 
 @dataclasses.dataclass
