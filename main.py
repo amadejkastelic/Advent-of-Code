@@ -15,6 +15,7 @@ class Config:
     day: int
     part: typing.Optional[int] = None
     input_file: typing.Optional[str] = None
+    debug: bool = False
     init: bool = False
     fetch_input: bool = False
     session_token: typing.Optional[str] = None
@@ -49,6 +50,12 @@ class Config:
             default='input.txt',
         )
         parser.add_argument(
+            '--debug',
+            help='Write debug logs',
+            default=False,
+            action='store_true',
+        )
+        parser.add_argument(
             '--init',
             help='Prepare stuff',
             default=False,
@@ -73,6 +80,7 @@ class Config:
             day=args.day,
             part=args.part,
             input_file=f'inputs/{args.year}/day{args.day}/{args.input}',
+            debug=args.debug,
             init=args.init,
             fetch_input=args.fetch_input,
             session_token=args.session_token,
@@ -93,7 +101,7 @@ if __name__ == '__main__':
     try:
         s: solver.Solver = importlib.import_module(
             f'{config.year}.day{config.day}.solver',
-        ).Solver(config.input_file)
+        ).Solver(input_file_path=config.input_file, debug=config.debug)
     except ImportError:
         print('Invalid year or day')
         sys.exit(1)

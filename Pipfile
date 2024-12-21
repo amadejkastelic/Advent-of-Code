@@ -9,6 +9,7 @@ networkx = "*"
 matplotlib = "*"
 requests = "*"
 beautifulsoup4 = "4.12.3"
+lz4 = "*"
 
 [dev-packages]
 black = "==24.10.0"

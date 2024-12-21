@@ -5,8 +5,9 @@ import utils
 
 class Solver:
     @utils.timed("init")
-    def __init__(self, input_file_path: str):
+    def __init__(self, input_file_path: str, debug: bool = False):
         self.input_file_path = input_file_path
+        self.debug = debug
         self._init()
 
     def _init(self):
