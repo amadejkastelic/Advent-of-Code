@@ -1,5 +1,5 @@
-import functools
 import typing
+from collections import defaultdict
 
 import solver
 
@@ -28,20 +28,11 @@ class Secret:
         next_num = Secret._mix_and_prune(next_num, int(next_num / 32))
         return Secret._mix_and_prune(next_num, next_num * 2048)
 
-    def seq_at(self, i: int) -> typing.Optional[typing.Tuple[int, int, int, int]]:
-        return tuple(
-            [
-                self.cache[i - 3] - self.cache[i - 4],
-                self.cache[i - 2] - self.cache[i - 3],
-                self.cache[i - 1] - self.cache[i - 2],
-                self.cache[i] - self.cache[i - 1],
-            ]
-        )
+    def sequences(self) -> typing.Dict[typing.Tuple[int, int, int, int], int]:
+        res = {}
 
-    @functools.lru_cache(maxsize=0)
-    def find_seq(self, seq: typing.Tuple[int, int, int, int]) -> typing.Optional[int]:
         for i in range(4, len(self.cache)):
-            cur_seq = tuple(
+            seq = tuple(
                 [
                     self.cache[i - 3] - self.cache[i - 4],
                     self.cache[i - 2] - self.cache[i - 3],
@@ -49,10 +40,10 @@ class Secret:
                     self.cache[i] - self.cache[i - 1],
                 ]
             )
-            if cur_seq == seq:
-                return self.cache[i]
+            if seq not in res:
+                res[seq] = self.cache[i]
 
-        return None
+        return res
 
 
 class Solver(solver.Solver):
@@ -64,25 +55,8 @@ class Solver(solver.Solver):
         return sum([secret.value_on_iter(2000) for secret in self.secrets])
 
     def _solve_part2(self) -> int:
-        res = 0
-        cmped = {}
+        res = defaultdict(int)
         for secret in self.secrets:
-            for k, v in sorted(secret.cache.items(), key=lambda x: x[1], reverse=True):
-                if k < 4:
-                    continue
-                temp_res = v
-                seq = secret.seq_at(k)
-                for other in self.secrets:
-                    if secret.value == other.value:
-                        continue
-
-                    if (secret.value + other.value, seq) in cmped:
-                        continue
-                    cmped[(secret.value + other.value, seq)] = True
-
-                    val = other.find_seq(seq)
-                    if val:
-                        temp_res += val
-                if temp_res > res:
-                    res = temp_res
-        return res
+            for sequence, cost in secret.sequences().items():
+                res[sequence] += cost
+        return max(res.values())
